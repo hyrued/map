@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>庭園マップ</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-leUL68WXYB3JjkJD5ePnprP2fGOXn2c"></script>
+    <style>
+        #map {
+            height: 100vh; /* 画面全体にマップを表示 */
+            width: 100%;
+        }
+        /* ×印を非表示にするCSS */
+        .gm-style-iw .gm-ui-hover-effect {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // マップの初期化
+        function initMap() {
+            // マップを表示する位置を指定
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 35.29843500832663, lng: 136.12516457785668 }, // 琵琶湖を中心に設定
+                zoom: 9.5,
+            });
+
+            // マーカーのデータ
+            const locations = [
+                { position: { lat: 35.0307662, lng: 135.7356958 }, url: "https://sekisuihouse-ltd.box.com/s/trwihkc5zivg8m67nm9i5jnrnphhqnu7", content: '北野天満宮風月の庭' },
+                { position: { lat: 35.0547256, lng: 135.7319397 }, url: "https://sekisuihouse-ltd.box.com/s/57ayg3udrb09cg3wh87qt33njwzo1gzt", content: '源光庵' },
+                { position: { lat: 35.476233, lng: 135.4472732 }, url: "https://sekisuihouse-ltd.box.com/s/ix77272otn8o5ky85mgey63tkgaw9688", content: '金剛院' },
+                { position: { lat: 35.2401648, lng: 135.1197804 }, url: "https://sekisuihouse-ltd.box.com/s/57ayg3udrb09cg3wh87qt33njwzo1gzt", content: '石像寺' },
+                { position: { lat: 36.0686038, lng: 136.2242667 }, url: "https://sekisuihouse-ltd.box.com/s/gufiu38quxjzxafz5zx0tyfpcu9gbd15", content: '養浩館庭園' },
+                { position: { lat: 36.0686037, lng: 136.2242666 }, url: "https://sekisuihouse-ltd.box.com/s/k7oyil7c3iixl095gdmxuka1szsmta79", content: '名勝 養浩館庭園' },
+                { position: { lat: 35.0694224, lng: 135.8672656 }, url: "https://sekisuihouse-ltd.box.com/s/81zlp9chli2y9yxxxucgijz916gyfmuh", content: '滋賀院門跡' },
+                { position: { lat: 34.9899804, lng: 135.8952808 }, url: "https://sekisuihouse-ltd.box.com/s/57ayg3udrb09cg3wh87qt33njwzo1gzt" , content: '蘆花浅水荘（記恩寺）'},
+                { position: { lat: 35.0811063, lng: 135.8664674 }, url: "https://sekisuihouse-ltd.box.com/s/l7nuyqaa60lrs6v01i37ajirnrod4s9i", content: '西教寺' },
+                { position: { lat: 35.27789, lng: 136.2539424 }, url: "https://sekisuihouse-ltd.box.com/s/b5671rg5i9b06pfejicx4wwc0sfrkgxv", content: '玄宮園' },
+                { position: { lat: 35.278717, lng: 136.2528429 }, url: "https://sekisuihouse-ltd.box.com/s/57ayg3udrb09cg3wh87qt33njwzo1gzt", content: '楽々園(槻御殿)' },
+                { position: { lat: 34.6860413, lng: 135.8371815 }, url: "https://sekisuihouse-ltd.box.com/s/8c847fmcpekab6fywk9j0s05s4jaqf1r" , content: '依水園・寧楽美術館'},
+                { position: { lat: 34.6854761, lng: 135.8363105 }, url: "https://sekisuihouse-ltd.box.com/s/1emlp799eg0ftgttl5octambneurer2j", content: '吉城園（旧正法院家住宅）' },
+                { position: { lat: 35.0115712, lng: 135.7872752 }, url: "https://sekisuihouse-ltd.box.com/s/57ayg3udrb09cg3wh87qt33njwzo1gzt", content: '無鄰菴' },
+                { position: { lat: 35.025620, lng: 135.712067 }, url: "https://sekisuihouse-ltd.box.com/s/iw0fo7p211gvei6f9okw6pkmu6rwuaob", content: '旧邸御室' },
+                { position: { lat: 35.014346, lng: 135.8524154 }, url: "https://sekisuihouse-ltd.box.com/s/04b0ujc3geuo9100fb50xswhrk6l6yzo" , content: '園城寺光浄院庭園'},
+                { position: { lat: 35.0729835, lng: 135.8667538 }, url: "https://sekisuihouse-ltd.box.com/s/725k96gjhq8x6lzkisyjix6bn031dea0", content: '慈光院' },
+                { position: { lat: 34.9839947, lng: 136.1720153 }, url: "https://sekisuihouse-ltd.box.com/s/uwwh81ryq2m96tgo7xk0u9m256iiodjt" , content: '大池寺 蓬莱庭園'},
+                { position: { lat: 36.5636902, lng: 136.6639003 }, url: "https://sekisuihouse-ltd.box.com/s/utlz1gmaowiwt21fqspn617c56jtxtn8", content: '西田家庭園「玉泉園」' },
+                { position: { lat: 35.4462027, lng: 135.3315884 }, url: "https://sekisuihouse-ltd.box.com/s/57ayg3udrb09cg3wh87qt33njwzo1gzt", content: '田辺城跡心種園' },
+                { position: { lat: 34.826052, lng: 135.4307928 }, url: "https://sekisuihouse-ltd.box.com/s/ulcaitxmm0sv1cs5ybdlzpw7chv6iaal", content: '雅俗山荘'},
+                { position: { lat: 35.4555587, lng: 134.9593612 }, url: "https://sekisuihouse-ltd.box.com/s/07215kmeaajqd7d4ewe2v0boacsysqm8", content: '但馬安國禪寺' },
+                { position: { lat: 35.9510117, lng: 136.1846412 }, url: "https://sekisuihouse-ltd.box.com/s/uop6lhnkgywenvw0tfv6pv93zzqpityr", content: '嚮陽庭園休憩舎' },
+                { position: { lat: 35.3146965, lng: 136.2955492 }, url: "https://sekisuihouse-ltd.box.com/s/jinunlbxcu8bpneja4udvofmehqt9n5k" , content: '青岸寺庭園'},
+                { position: { lat: 35.1388949, lng: 136.1639923 }, url: "https://sekisuihouse-ltd.box.com/s/7hcy64n34mu1wg1oo8pvdnk935zxn84h", content: '教林坊' },
+                { position: { lat: 35.1138169 , lng: 135.9223983 }, url: "https://sekisuihouse-ltd.box.com/s/rckszplkck9undam9g4vd8g5v0i5d25t", content: '居初氏庭園（天然図画亭）' },
+                { position: { lat: 35.0714614, lng: 135.8656625 }, url: "https://sekisuihouse-ltd.box.com/s/g6kotsr0gqo7sjxwkadglrqrvj0difys", content: '旧竹林院庭園(国指定名勝)' }, 
+                { position: { lat: 35.0145812, lng: 135.7943607 }, url: "https://sekisuihouse-ltd.box.com/s/tkyzzxab0ba1f86lw4ul1w999yhfg0a3", content: '永観堂' },
+                { position: { lat: 34.9511172, lng: 135.8193543 }, url: "https://sekisuihouse-ltd.box.com/s/26ahporfag1izogvk5blui4fjmvcvgc0", content: '醍醐寺' }, 
+                { position: { lat: 35.3758436, lng: 136.266327 }, url: "https://sekisuihouse-ltd.box.com/s/5x4kk5tuwc13npjlt0y76ayg4p8b8fey", content: '慶雲館' },
+                { position: { lat: 35.2258417, lng: 136.2905184 }, url: "https://sekisuihouse-ltd.box.com/s/93y16v8m2orpj9aphfk9am3lkaqe3jyw", content: '奥書院庭園' },
+                { position: { lat: 35.2828111, lng: 136.2664144 }, url: "https://sekisuihouse-ltd.box.com/s/acdghvj482d3b1v4hou0rol1v81vsjzd", content: '龍潭寺' },
+                { position: { lat: 35.0177595, lng: 135.7617429 }, url: "https://sekisuihouse-ltd.box.com/s/wzyqwlh8yearozpxd1fqpy94edufw2j1", content: '拾翠亭' },
+                { position: { lat: 35.0644961, lng: 135.7687753 }, url: "https://sekisuihouse-ltd.box.com/s/q86z73ghsaps52j3hg9jimcrjg77k3zp", content: '圓通寺庭園' },
+                { position: { lat: 35.3137228, lng: 135.0844561 }, url: "https://sekisuihouse-ltd.box.com/s/eqn25hz06ievxoyatokxmfi9zdzjed93", content: '医王山 長安寺（もみじ寺）' },
+                { position: { lat: 34.97696688287229, lng: 135.773917883413 }, url: "https://sekisuihouse-ltd.box.com/s/hl3868sh0dnndl1n4evfgbudub3j8hpd", content: '東福寺本坊庭園' },
+               
+               ];
+
+            // マーカーを作成
+            locations.forEach((location) => {
+                const marker = new google.maps.Marker({
+                    position: location.position,
+                    map: map,
+                });
+
+                // 情報ウィンドウを作成
+                const infoWindow = new google.maps.InfoWindow({
+                    content: location.content,
+                    disableAutoPan: true, // 自動パンを無効にする
+                });
+
+                // マウスオーバーで情報ウィンドウを表示
+                marker.addListener("mouseover", () => {
+                    infoWindow.open(map, marker);
+                });
+
+                // マウスアウトで情報ウィンドウを閉じる
+                marker.addListener("mouseout", () => {
+                    infoWindow.close();
+                });
+
+                // マーカーをクリックしたときにリンク先へ遷移
+                marker.addListener("click", () => {
+                    window.location.href = location.url;
+                });
+            });
+        }
+
+        // マップを初期化
+        window.onload = initMap;
+    </script>
+</body>
+</html>
